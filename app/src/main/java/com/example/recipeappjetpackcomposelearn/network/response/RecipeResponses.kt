@@ -7,6 +7,6 @@ data class RecipeResponses(
     @SerializedName("count")
     val count: Int,
 
-    @SerializedName("result")
+    @SerializedName("results")
     var recipes: List<RecipeDto>
 )
