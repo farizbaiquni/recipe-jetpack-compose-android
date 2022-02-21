@@ -9,11 +9,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.recipeappjetpackcomposelearn.R
 import com.example.recipeappjetpackcomposelearn.domain.model.RecipeModel
+import com.example.recipeappjetpackcomposelearn.util.LoadImage
 
 @Composable
 fun RecipeCard(
@@ -29,13 +31,19 @@ fun RecipeCard(
             .clickable { onClick },
     ) {
         Column() {
-            recipeModel.featuredImage?.let{ url -> 
-                Image(
-                    painterResource(id = R.drawable.empty_plate),
-                    contentDescription = "no image recipe",
-                    modifier = Modifier.fillMaxWidth(),
-                    contentScale = ContentScale.Crop,
-                )
+            recipeModel.featuredImage?.let{ url ->
+
+                var image = LoadImage(url = url, defaultImage = R.drawable.empty_plate).value
+
+                image?.let { image ->
+                    Image(
+                        bitmap = image.asImageBitmap(),
+                        contentDescription = "no image recipe",
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.Crop,
+                    )
+                }
+
             }
             recipeModel.title?.let { title ->
                 Row(
@@ -54,7 +62,8 @@ fun RecipeCard(
                     recipeModel.rating?.let { rating ->
                         Text(
                             text = rating.toString(),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .wrapContentWidth(Alignment.End)
                                 .align(Alignment.CenterVertically),
                             style = MaterialTheme.typography.h6
