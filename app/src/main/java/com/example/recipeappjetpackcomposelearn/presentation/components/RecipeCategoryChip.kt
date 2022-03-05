@@ -25,8 +25,7 @@ fun RecipeCategoryChip(
     context: Context = LocalContext.current,
 ){
     Surface(
-        color = if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.primary,
-        modifier = Modifier.padding(top = 10.dp),
+        color = if (isSelected) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.primary,
         shape = MaterialTheme.shapes.small,
     ) {
         Row(

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipeappjetpackcomposelearn.domain.model.RecipeModel
 import com.example.recipeappjetpackcomposelearn.domain.repository.RecipeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -21,6 +22,7 @@ class RecipeListViewModel @Inject constructor(
     val query: MutableState<String> = mutableStateOf("")
     val selectedCategory: MutableState<FoodCategory?> = mutableStateOf(null)
     val scrollCategoryIndex: MutableState<Int> = mutableStateOf(0)
+    val isLoading = mutableStateOf(false)
 
     init {
         newSearch()
@@ -28,11 +30,14 @@ class RecipeListViewModel @Inject constructor(
 
     fun newSearch(){
         viewModelScope.launch {
+            isLoading.value = true
+            delay(2000)
             var result = recipeRepository.search(
                 "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
                 1,
                 query.value)
             recipes.value = result
+            isLoading.value = false
         }
     }
 
