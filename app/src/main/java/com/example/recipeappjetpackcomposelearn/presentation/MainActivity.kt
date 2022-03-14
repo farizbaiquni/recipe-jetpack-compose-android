@@ -15,6 +15,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.recipeappjetpackcomposelearn.presentation.components.CircularIndeterminateProgressBar
 import com.example.recipeappjetpackcomposelearn.presentation.components.RecipeCard
 import com.example.recipeappjetpackcomposelearn.presentation.components.SearchAppBar
@@ -22,12 +24,15 @@ import com.example.recipeappjetpackcomposelearn.presentation.recipelist.PAGE_SIZ
 import com.example.recipeappjetpackcomposelearn.presentation.recipelist.RecipeListViewModel
 import com.example.recipeappjetpackcomposelearn.presentation.utils.ShimmerRecipeListAnimation
 import com.example.recipeappjetpackcomposelearn.ui.theme.RecipeAppJetpackComposeLearnTheme
+import com.example.recipeappjetpackcomposelearn.util.SetupNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    lateinit var navController: NavHostController
 
     @Inject
     lateinit @Named("auth_token") var random: String
@@ -38,16 +43,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val recipes = recipeListViewModel.recipes.value
-            val query = recipeListViewModel.query.value
-            val scrollCategoryIndex = recipeListViewModel.scrollCategoryIndex.value
-            val selectedCategory = recipeListViewModel.query.value
-            val isLoading = recipeListViewModel.isLoading.value
-            val isDarkMode = recipeListViewModel.isDarkMode.value
-            val page = recipeListViewModel.page.value
 
-            val categoryState = rememberLazyListState()
-            val coroutineScope = rememberCoroutineScope()
+            navController = rememberNavController()
+            val isDarkMode = recipeListViewModel.isDarkMode.value
 
             RecipeAppJetpackComposeLearnTheme(darkTheme = isDarkMode) {
 
@@ -57,60 +55,9 @@ class MainActivity : ComponentActivity() {
                     Color.parseColor("#087f23")
                 }
 
-                Scaffold(
-                    Modifier
-                        .background(MaterialTheme.colors.background)
-                        .padding(horizontal = 10.dp),
-                    topBar = {
-                        //Search Top bar
-                        SearchAppBar(
-                            query = query,
-                            onChangeQuery = recipeListViewModel::onChangeQuery,
-                            onExecuteSearch = { recipeListViewModel.newQuery() },
-                            categoryState = categoryState,
-                            selectedCategory = selectedCategory,
-                            onSelectedCategoryChange = recipeListViewModel::onSelectedCategoryChange,
-                            onScrollCategory = recipeListViewModel::onScrollCategory,
-                            coroutineScope = coroutineScope,
-                            scrollCategoryIndex = scrollCategoryIndex,
-                            isDarkMode = isDarkMode,
-                            onChangeDarkMode = recipeListViewModel::onChangeDarkMode,
-                            recipesSize = recipes.size,
-                            isLoading = isLoading,
-                        )
-                    }
-                ) {
-                    if(!isLoading || recipes.isNotEmpty()){
-                        LazyColumn() {
-                            itemsIndexed(
-                                items = recipes,
-                                key = { index, item -> item.id as Any }
-                            ){
-                                    index, recipe ->
-                                recipeListViewModel.onChangeRecipeListPosition(index)
-                                if((index + 1) >= (page * PAGE_SIZE)){
-                                    recipeListViewModel.nextQuery()
-                                }
-                                RecipeCard(recipeModel = recipe, onClick = {} )
-                            }
-                        } // End LazyColumn
-                    } else {
+                SetupNavGraph(navController)
 
-                        Column() {
-
-                            CircularIndeterminateProgressBar(isDisplay = isLoading)
-
-                            LazyColumn {
-                                repeat(5) {
-                                    item {
-                                        ShimmerRecipeListAnimation()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
-        }
-    }
-}
+        } // End setContent
+    } // End onCreate
+}// End MainActivity

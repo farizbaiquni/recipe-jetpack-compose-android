@@ -51,7 +51,6 @@ class RecipeListViewModel @Inject constructor(
 
                     appendRecipes(result)
                     isLoading.value = false
-
                 }catch (e: Exception){
 
                 }
