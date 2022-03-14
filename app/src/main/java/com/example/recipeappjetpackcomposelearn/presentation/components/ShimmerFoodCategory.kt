@@ -8,7 +8,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ShimmerRecipeList( brush: Brush) {
+fun ShimmerFoodCategory(
+    brush: Brush
+) {
     // Column composable containing spacer shaped like a rectangle,
     // set the [background]'s [brush] with the brush receiving from [ShimmerAnimation]
     // Composable which is the Animation you are gonna create.

@@ -11,10 +11,14 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import com.example.recipeappjetpackcomposelearn.ui.theme.DarkThemeBackground
+import com.example.recipeappjetpackcomposelearn.ui.theme.Green500
+import com.example.recipeappjetpackcomposelearn.ui.theme.Green700
 
 @Composable
 fun RecipeCategoryChip(
@@ -22,10 +26,10 @@ fun RecipeCategoryChip(
     category: String,
     onSelectedCategoryChange: (String) -> Unit,
     onExecuteSearch: () -> Unit,
-    context: Context = LocalContext.current,
+    isDarkMode: Boolean,
 ){
     Surface(
-        color = if (isSelected) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.primary,
+        color = backgroundColorCategoryChip(isDarkMode, isSelected),
         shape = MaterialTheme.shapes.small,
     ) {
         Row(
@@ -34,15 +38,34 @@ fun RecipeCategoryChip(
                 onValueChange = {
                     onSelectedCategoryChange(category)
                     onExecuteSearch()
-                    // Toast.makeText(context, "Category ${category}, isSelected ${isSelected}", Toast.LENGTH_SHORT).show()
-                }
+                },
+
             )
 
         ) {
             Text(
                 text = category,
-                modifier = Modifier.padding(top = 5.dp, bottom = 5.dp, start = 7.dp, end = 7.dp),
+                modifier = Modifier
+                    .padding(top = 5.dp, bottom = 5.dp, start = 7.dp, end = 7.dp),
+                fontFamily = MaterialTheme.typography.button.fontFamily,
+                color = if(isDarkMode && isSelected) Color.Black else Color.White
             )
+        }
+    }
+}
+
+fun backgroundColorCategoryChip(isDarkMode: Boolean, isSelected: Boolean): Color{
+    if(isDarkMode){
+        if(isSelected){
+            return Color.LightGray
+        }else{
+            return DarkThemeBackground
+        }
+    }else{
+        if(isSelected){
+            return Green500
+        }else{
+            return Green700
         }
     }
 }

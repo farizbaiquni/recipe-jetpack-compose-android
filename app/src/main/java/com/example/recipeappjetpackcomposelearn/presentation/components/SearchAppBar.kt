@@ -1,5 +1,6 @@
 package com.example.recipeappjetpackcomposelearn.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -8,6 +9,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -17,6 +19,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.recipeappjetpackcomposelearn.presentation.recipelist.getAllFoodCategories
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +37,8 @@ fun SearchAppBar(
     onScrollCategory: (Int) -> Unit,
     coroutineScope: CoroutineScope,
     scrollCategoryIndex: Int,
+    isDarkMode: Boolean,
+    onChangeDarkMode: (Boolean) -> Unit,
 
 ){
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -60,6 +65,15 @@ fun SearchAppBar(
                     leadingIcon = {
                         Icon(Icons.Filled.Search, "Search")
                     },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.MoreVert,
+                            "Dark Mode",
+                            Modifier.clickable {
+                                onChangeDarkMode(!isDarkMode)
+                            }
+                        )
+                    },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Search,
@@ -71,7 +85,7 @@ fun SearchAppBar(
                     }),
 
                     colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = Color.White
+                        backgroundColor = MaterialTheme.colors.background,
                     )
                 )
             }
@@ -92,7 +106,8 @@ fun SearchAppBar(
                                 },
                                 onExecuteSearch = {
                                     onExecuteSearch()
-                                }
+                                },
+                                isDarkMode = isDarkMode,
                             )
                 }
                 coroutineScope.launch {

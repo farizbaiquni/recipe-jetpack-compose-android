@@ -1,16 +1,21 @@
 package com.example.recipeappjetpackcomposelearn.presentation
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.example.recipeappjetpackcomposelearn.presentation.components.CircularIndeterminateProgressBar
 import com.example.recipeappjetpackcomposelearn.presentation.components.RecipeCard
 import com.example.recipeappjetpackcomposelearn.presentation.components.SearchAppBar
@@ -29,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
     private val recipeListViewModel: RecipeListViewModel by viewModels()
 
-    @ExperimentalComposeUiApi
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,13 +44,21 @@ class MainActivity : ComponentActivity() {
             val scrollCategoryIndex = recipeListViewModel.scrollCategoryIndex.value
             val selectedCategory = recipeListViewModel.query.value
             val isLoading = recipeListViewModel.isLoading.value
+            val isDarkMode = recipeListViewModel.isDarkMode.value
 
             val categoryState = rememberLazyListState()
             val coroutineScope = rememberCoroutineScope()
 
-            RecipeAppJetpackComposeLearnTheme {
+            RecipeAppJetpackComposeLearnTheme(darkTheme = isDarkMode) {
+
+                this.window.statusBarColor = if(isDarkMode){
+                    Color.parseColor("#121212")
+                } else {
+                    Color.parseColor("#087f23")
+                }
+
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
@@ -60,15 +73,14 @@ class MainActivity : ComponentActivity() {
                         onScrollCategory = recipeListViewModel::onScrollCategory,
                         coroutineScope = coroutineScope,
                         scrollCategoryIndex = scrollCategoryIndex,
+                        isDarkMode = isDarkMode,
+                        onChangeDarkMode = recipeListViewModel::onChangeDarkMode
                     )
 
                     Spacer(modifier = Modifier.padding(5.dp))
 
                     // Recipe List
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
+                    Row() {
                         if(!isLoading){
                             LazyColumn(
                                 verticalArrangement = Arrangement.spacedBy(3.dp),
@@ -88,7 +100,7 @@ class MainActivity : ComponentActivity() {
                                 */
                                 repeat(5) {
                                     item {
-                                        ShimmerRecipeListAnimation()
+                                        // ShimmerRecipeListAnimation()
                                     }
                                 }
                             }

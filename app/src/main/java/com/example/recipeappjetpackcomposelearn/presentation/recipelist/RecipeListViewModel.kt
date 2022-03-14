@@ -23,9 +23,14 @@ class RecipeListViewModel @Inject constructor(
     val selectedCategory: MutableState<FoodCategory?> = mutableStateOf(null)
     val scrollCategoryIndex: MutableState<Int> = mutableStateOf(0)
     val isLoading = mutableStateOf(false)
+    val isDarkMode = mutableStateOf(false)
 
     init {
         newSearch()
+    }
+
+    fun onChangeDarkMode(value: Boolean){
+        this.isDarkMode.value = value
     }
 
     fun newSearch(){
