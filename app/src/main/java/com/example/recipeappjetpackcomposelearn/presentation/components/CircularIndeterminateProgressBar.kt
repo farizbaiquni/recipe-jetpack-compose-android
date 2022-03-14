@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 fun CircularIndeterminateProgressBar(isDisplay: Boolean){
     if (isDisplay){
         Row(
-            modifier = Modifier.fillMaxWidth().padding(50.dp),
+            modifier = Modifier.fillMaxWidth().padding(25.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(

@@ -1,5 +1,6 @@
 package com.example.recipeappjetpackcomposelearn.presentation.recipelist
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
+
+const val PAGE_SIZE = 30
 
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
@@ -24,21 +27,64 @@ class RecipeListViewModel @Inject constructor(
     val scrollCategoryIndex: MutableState<Int> = mutableStateOf(0)
     val isLoading = mutableStateOf(false)
     val isDarkMode = mutableStateOf(false)
+    val page = mutableStateOf(1)
+
+    var scrollRecipeListPosition = 0;
 
     init {
-        newSearch()
+        newQuery()
+    }
+
+    fun nextQuery(){
+        if((scrollRecipeListPosition + 1) >= (page.value * PAGE_SIZE)){
+            viewModelScope.launch {
+                Log.d("CALLED", "nextQuery: CALLED NEXT QUERY")
+                try {
+                    isLoading.value = true
+                    incrementPage()
+
+                    val result = recipeRepository.search(
+                        token = authToken,
+                        page = page.value,
+                        query = query.value,
+                    )
+
+                    appendRecipes(result)
+                    isLoading.value = false
+
+                }catch (e: Exception){
+
+                }
+            }
+        }
+    }
+
+    fun appendRecipes(data: List<RecipeModel>){
+        val currentRecipes = ArrayList(this.recipes.value)
+        currentRecipes.addAll(data)
+        this.recipes.value = currentRecipes
+    }
+
+
+    fun incrementPage(){
+        this.page.value = this.page.value + 1
+    }
+
+    fun onChangeRecipeListPosition(value: Int){
+        scrollRecipeListPosition = value
     }
 
     fun onChangeDarkMode(value: Boolean){
         this.isDarkMode.value = value
     }
 
-    fun newSearch(){
+    fun newQuery(){
         viewModelScope.launch {
+            recipes.value = arrayListOf()
             isLoading.value = true
             delay(2000)
             var result = recipeRepository.search(
-                "Token 9c8b06d329136da358c2d00e76946b0111ce2c48",
+                authToken,
                 1,
                 query.value)
             recipes.value = result

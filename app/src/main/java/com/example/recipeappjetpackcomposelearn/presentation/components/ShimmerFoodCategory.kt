@@ -14,18 +14,11 @@ fun ShimmerFoodCategory(
     // Column composable containing spacer shaped like a rectangle,
     // set the [background]'s [brush] with the brush receiving from [ShimmerAnimation]
     // Composable which is the Animation you are gonna create.
-    Column(modifier = Modifier.padding(16.dp)) {
+    Row(modifier = Modifier.padding(end = 10.dp)) {
         Spacer(
             modifier = Modifier
-                .fillMaxWidth()
-                .size(250.dp)
-                .background(brush = brush)
-        )
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .padding(vertical = 8.dp)
+                .width(70.dp)
+                .height(25.dp)
                 .background(brush = brush)
         )
     }

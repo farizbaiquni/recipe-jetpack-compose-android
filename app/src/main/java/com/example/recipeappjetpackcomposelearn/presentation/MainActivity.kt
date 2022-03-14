@@ -2,6 +2,7 @@ package com.example.recipeappjetpackcomposelearn.presentation
 
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -9,16 +10,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.example.recipeappjetpackcomposelearn.presentation.components.CircularIndeterminateProgressBar
 import com.example.recipeappjetpackcomposelearn.presentation.components.RecipeCard
 import com.example.recipeappjetpackcomposelearn.presentation.components.SearchAppBar
+import com.example.recipeappjetpackcomposelearn.presentation.recipelist.PAGE_SIZE
 import com.example.recipeappjetpackcomposelearn.presentation.recipelist.RecipeListViewModel
 import com.example.recipeappjetpackcomposelearn.presentation.utils.ShimmerRecipeListAnimation
 import com.example.recipeappjetpackcomposelearn.ui.theme.RecipeAppJetpackComposeLearnTheme
@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
 
     private val recipeListViewModel: RecipeListViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,6 +44,7 @@ class MainActivity : ComponentActivity() {
             val selectedCategory = recipeListViewModel.query.value
             val isLoading = recipeListViewModel.isLoading.value
             val isDarkMode = recipeListViewModel.isDarkMode.value
+            val page = recipeListViewModel.page.value
 
             val categoryState = rememberLazyListState()
             val coroutineScope = rememberCoroutineScope()
@@ -57,61 +57,59 @@ class MainActivity : ComponentActivity() {
                     Color.parseColor("#087f23")
                 }
 
-                Column(
-                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.background),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Scaffold(
+                    Modifier
+                        .background(MaterialTheme.colors.background)
+                        .padding(horizontal = 10.dp),
+                    topBar = {
+                        //Search Top bar
+                        SearchAppBar(
+                            query = query,
+                            onChangeQuery = recipeListViewModel::onChangeQuery,
+                            onExecuteSearch = { recipeListViewModel.newQuery() },
+                            categoryState = categoryState,
+                            selectedCategory = selectedCategory,
+                            onSelectedCategoryChange = recipeListViewModel::onSelectedCategoryChange,
+                            onScrollCategory = recipeListViewModel::onScrollCategory,
+                            coroutineScope = coroutineScope,
+                            scrollCategoryIndex = scrollCategoryIndex,
+                            isDarkMode = isDarkMode,
+                            onChangeDarkMode = recipeListViewModel::onChangeDarkMode,
+                            recipesSize = recipes.size,
+                            isLoading = isLoading,
+                        )
+                    }
                 ) {
-
-                    //Search Top bar
-                    SearchAppBar(
-                        query = query,
-                        onChangeQuery = recipeListViewModel::onChangeQuery,
-                        onExecuteSearch = { recipeListViewModel.newSearch() },
-                        categoryState = categoryState,
-                        selectedCategory = selectedCategory,
-                        onSelectedCategoryChange = recipeListViewModel::onSelectedCategoryChange,
-                        onScrollCategory = recipeListViewModel::onScrollCategory,
-                        coroutineScope = coroutineScope,
-                        scrollCategoryIndex = scrollCategoryIndex,
-                        isDarkMode = isDarkMode,
-                        onChangeDarkMode = recipeListViewModel::onChangeDarkMode
-                    )
-
-                    Spacer(modifier = Modifier.padding(5.dp))
-
-                    // Recipe List
-                    Row() {
-                        if(!isLoading){
-                            LazyColumn(
-                                verticalArrangement = Arrangement.spacedBy(3.dp),
-                                modifier = Modifier.fillMaxWidth(0.95f)
+                    if(!isLoading || recipes.isNotEmpty()){
+                        LazyColumn() {
+                            itemsIndexed(
+                                items = recipes,
+                                key = { index, item -> item.id as Any }
                             ){
-                                itemsIndexed(items = recipes){
-                                        index, recipe ->
-                                    RecipeCard(recipeModel = recipe, onClick = {} )
+                                    index, recipe ->
+                                recipeListViewModel.onChangeRecipeListPosition(index)
+                                if((index + 1) >= (page * PAGE_SIZE)){
+                                    recipeListViewModel.nextQuery()
                                 }
-                            } // End LazyColumn
-                        } else {
+                                RecipeCard(recipeModel = recipe, onClick = {} )
+                            }
+                        } // End LazyColumn
+                    } else {
+
+                        Column() {
+
+                            CircularIndeterminateProgressBar(isDisplay = isLoading)
+
                             LazyColumn {
-                                /*
-                                  Lay down the Shimmer Animated item 5 time
-                                  [repeat] is like a loop which executes the body
-                                  according to the number specified
-                                */
                                 repeat(5) {
                                     item {
-                                        // ShimmerRecipeListAnimation()
+                                        ShimmerRecipeListAnimation()
                                     }
                                 }
                             }
                         }
-
-                        CircularIndeterminateProgressBar(isDisplay = isLoading)
-
                     }
-
                 }
-
             }
         }
     }
