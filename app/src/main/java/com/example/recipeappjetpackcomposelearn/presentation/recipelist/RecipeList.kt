@@ -43,7 +43,7 @@ fun RecipeList(
             SearchAppBar(
                 query = query,
                 onChangeQuery = recipeListViewModel::onChangeQuery,
-                onExecuteSearch = { recipeListViewModel.newQuery() },
+                onExecuteSearch = { recipeListViewModel.onTriggerRecipeListEvent(RecipeListEvent.NewQueryEvent) },
                 categoryState = categoryState,
                 selectedCategory = selectedCategory,
                 onSelectedCategoryChange = recipeListViewModel::onSelectedCategoryChange,
@@ -67,7 +67,7 @@ fun RecipeList(
                         index, recipe ->
                     recipeListViewModel.onChangeRecipeListPosition(index)
                     if((index + 1) >= (page * PAGE_SIZE)){
-                        recipeListViewModel.nextQuery()
+                        recipeListViewModel.onTriggerRecipeListEvent(RecipeListEvent.NextQueryEvent)
                     }
                     RecipeCard(recipeModel = recipe, onClick = {} )
                 }

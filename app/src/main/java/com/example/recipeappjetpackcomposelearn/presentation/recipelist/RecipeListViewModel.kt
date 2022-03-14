@@ -32,31 +32,53 @@ class RecipeListViewModel @Inject constructor(
     var scrollRecipeListPosition = 0;
 
     init {
-        newQuery()
+        onTriggerRecipeListEvent(RecipeListEvent.NewQueryEvent)
     }
 
-    fun nextQuery(){
-        if((scrollRecipeListPosition + 1) >= (page.value * PAGE_SIZE)){
-            viewModelScope.launch {
-                Log.d("CALLED", "nextQuery: CALLED NEXT QUERY")
-                try {
-                    isLoading.value = true
-                    incrementPage()
-
-                    val result = recipeRepository.search(
-                        token = authToken,
-                        page = page.value,
-                        query = query.value,
-                    )
-
-                    appendRecipes(result)
-                    isLoading.value = false
-                }catch (e: Exception){
-
+    fun onTriggerRecipeListEvent(event: RecipeListEvent){
+        viewModelScope.launch {
+            try {
+                when(event) {
+                    is RecipeListEvent.NewQueryEvent -> {
+                        newQuery()
+                    }
+                    is RecipeListEvent.NextQueryEvent -> {
+                        nextQuery()
+                    }
                 }
-            }
+            } catch (e: Exception){}
         }
     }
+
+
+    suspend fun newQuery(){
+        recipes.value = arrayListOf()
+        isLoading.value = true
+        var result = recipeRepository.search(
+            authToken,
+            1,
+            query.value)
+        recipes.value = result
+        isLoading.value = false
+    }
+
+
+    suspend fun nextQuery(){
+        if((scrollRecipeListPosition + 1) >= (page.value * PAGE_SIZE)){
+            isLoading.value = true
+            incrementPage()
+
+            val result = recipeRepository.search(
+                token = authToken,
+                page = page.value,
+                query = query.value,
+            )
+
+            appendRecipes(result)
+            isLoading.value = false
+        }
+    }
+
 
     fun appendRecipes(data: List<RecipeModel>){
         val currentRecipes = ArrayList(this.recipes.value)
@@ -75,20 +97,6 @@ class RecipeListViewModel @Inject constructor(
 
     fun onChangeDarkMode(value: Boolean){
         this.isDarkMode.value = value
-    }
-
-    fun newQuery(){
-        viewModelScope.launch {
-            recipes.value = arrayListOf()
-            isLoading.value = true
-            delay(2000)
-            var result = recipeRepository.search(
-                authToken,
-                1,
-                query.value)
-            recipes.value = result
-            isLoading.value = false
-        }
     }
 
     fun onChangeQuery(input: String){
