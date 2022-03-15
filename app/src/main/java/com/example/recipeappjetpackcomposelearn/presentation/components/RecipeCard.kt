@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,21 +14,23 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.recipeappjetpackcomposelearn.R
 import com.example.recipeappjetpackcomposelearn.domain.model.RecipeModel
 import com.example.recipeappjetpackcomposelearn.util.LoadImage
 
+@ExperimentalMaterialApi
 @Composable
 fun RecipeCard(
     recipeModel: RecipeModel,
-    onClick: () -> Unit,
+    onClickRecipeCard: () -> Unit,
 ){
     Card(
         shape = MaterialTheme.shapes.small,
         elevation = 8.dp,
         modifier = Modifier
-            .padding(bottom = 6.dp, top = 6.dp)
-            .clickable { onClick },
+            .padding(bottom = 6.dp, top = 6.dp),
+        onClick = onClickRecipeCard
     ) {
         Column() {
             recipeModel.featuredImage?.let{ url ->

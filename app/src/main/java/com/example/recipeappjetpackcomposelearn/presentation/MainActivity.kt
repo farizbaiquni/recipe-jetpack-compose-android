@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.rememberCoroutineScope
@@ -29,6 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
 
+@ExperimentalMaterialApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -58,6 +60,9 @@ class MainActivity : ComponentActivity() {
                 SetupNavGraph(navController)
 
             }
+
         } // End setContent
+
     } // End onCreate
+
 }// End MainActivity
