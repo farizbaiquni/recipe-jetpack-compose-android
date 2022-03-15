@@ -9,16 +9,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.recipeappjetpackcomposelearn.presentation.recipe.RecipeDetails
 import com.example.recipeappjetpackcomposelearn.presentation.recipelist.RecipeList
+import com.example.recipeappjetpackcomposelearn.presentation.recipelist.RecipeListViewModel
 
 @ExperimentalMaterialApi
 @Composable
-fun SetupNavGraph( navController: NavHostController ){
+fun SetupNavGraph( navController: NavHostController, recipeListViewModel: RecipeListViewModel ){
     NavHost(navController = navController, startDestination = Screen.RecipeList.route){
 
         composable(
             route = Screen.RecipeList.route
         ){
-            RecipeList(navController)
+            RecipeList(navController, recipeListViewModel)
         }
 
         composable(

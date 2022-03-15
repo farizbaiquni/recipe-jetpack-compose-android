@@ -2,28 +2,15 @@ package com.example.recipeappjetpackcomposelearn.presentation
 
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.recipeappjetpackcomposelearn.presentation.components.CircularIndeterminateProgressBar
-import com.example.recipeappjetpackcomposelearn.presentation.components.RecipeCard
-import com.example.recipeappjetpackcomposelearn.presentation.components.SearchAppBar
-import com.example.recipeappjetpackcomposelearn.presentation.recipelist.PAGE_SIZE
 import com.example.recipeappjetpackcomposelearn.presentation.recipelist.RecipeListViewModel
-import com.example.recipeappjetpackcomposelearn.presentation.utils.ShimmerRecipeListAnimation
+import com.example.recipeappjetpackcomposelearn.presentation.utils.UserPreference
 import com.example.recipeappjetpackcomposelearn.ui.theme.RecipeAppJetpackComposeLearnTheme
 import com.example.recipeappjetpackcomposelearn.util.SetupNavGraph
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     Color.parseColor("#087f23")
                 }
 
-                SetupNavGraph(navController)
+                SetupNavGraph(navController, recipeListViewModel)
 
             }
 

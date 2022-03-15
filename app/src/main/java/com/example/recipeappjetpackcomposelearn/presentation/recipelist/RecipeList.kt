@@ -1,5 +1,6 @@
 package com.example.recipeappjetpackcomposelearn.presentation.recipelist
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -26,10 +27,9 @@ import com.example.recipeappjetpackcomposelearn.util.Screen
 @ExperimentalMaterialApi
 @Composable
 fun RecipeList(
-    navController: NavHostController
+    navController: NavHostController,
+    recipeListViewModel: RecipeListViewModel
 ){
-    val recipeDetailsViewModel: RecipeDetailsViewModel = hiltViewModel()
-    val recipeListViewModel: RecipeListViewModel = hiltViewModel()
     val recipes = recipeListViewModel.recipes.value
     val query = recipeListViewModel.query.value
     val scrollCategoryIndex = recipeListViewModel.scrollCategoryIndex.value

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeappjetpackcomposelearn.domain.model.RecipeModel
 import com.example.recipeappjetpackcomposelearn.domain.repository.RecipeRepository
+import com.example.recipeappjetpackcomposelearn.presentation.utils.UserPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,7 +19,8 @@ const val PAGE_SIZE = 30
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
     private val recipeRepository: RecipeRepository,
-    private @Named("auth_token") val authToken: String
+    private @Named("auth_token") val authToken: String,
+    private val prefs: UserPreference
 ): ViewModel() {
 
     val recipes: MutableState<List<RecipeModel>> = mutableStateOf(listOf())
@@ -33,6 +35,7 @@ class RecipeListViewModel @Inject constructor(
 
     init {
         onTriggerRecipeListEvent(RecipeListEvent.NewQueryEvent)
+        isDarkMode.value = prefs.readThemeMode()
     }
 
     fun onTriggerRecipeListEvent(event: RecipeListEvent){
@@ -95,8 +98,9 @@ class RecipeListViewModel @Inject constructor(
         scrollRecipeListPosition = value
     }
 
-    fun onChangeDarkMode(value: Boolean){
-        this.isDarkMode.value = value
+    fun onChangeDarkMode(){
+        prefs.changeThemeMode()
+        this.isDarkMode.value = prefs.readThemeMode()
     }
 
     fun onChangeQuery(input: String){

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Recipe App Jetpack Compose Learn</string>
+    <string name="preference_file_key">com.example.recipeappjetpackcomposelearn.setting</string>
 </resources>

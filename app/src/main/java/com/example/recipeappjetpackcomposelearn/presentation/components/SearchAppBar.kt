@@ -41,7 +41,7 @@ fun SearchAppBar(
     coroutineScope: CoroutineScope,
     scrollCategoryIndex: Int,
     isDarkMode: Boolean,
-    onChangeDarkMode: (Boolean) -> Unit,
+    onChangeDarkMode: () -> Unit,
     recipesSize: Int,
     isLoading: Boolean,
 
@@ -71,7 +71,7 @@ fun SearchAppBar(
                             Icons.Filled.MoreVert,
                             "Dark Mode",
                             Modifier.clickable {
-                                onChangeDarkMode(!isDarkMode)
+                                onChangeDarkMode()
                             }
                         )
                     },

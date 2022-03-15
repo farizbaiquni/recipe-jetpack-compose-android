@@ -100,5 +100,9 @@ dependencies {
     //View Model Composable
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1")
 
+    //View Model Fragment
+    implementation 'androidx.fragment:fragment-ktx:1.4.1'
+
+
 
 }
